@@ -11,15 +11,18 @@ namespace kalam {
 class Terminal {
  public:
   Terminal() {
-    tcgetattr(STDIN_FILENO, &raw_termios_);
-    raw_termios_.c_lflag &= ~(ECHO);
-    tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw_termios_);
+    tcgetattr(STDIN_FILENO, &orig_termios_);
+    // TODO: Bind atexit() with disabling raw mode.
+
+    termios raw = orig_termios_;
+    raw.c_lflag &= ~(ECHO);
+    tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
   }
 
-  ~Terminal() { tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw_termios_); }
+  ~Terminal() { tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios_); }
 
  private:
-  termios raw_termios_;
+  termios orig_termios_;
 };
 
 }  // namespace kalam
