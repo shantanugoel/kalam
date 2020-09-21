@@ -15,11 +15,15 @@ class Terminal {
     // TODO: Bind atexit() with disabling raw mode.
 
     termios raw = orig_termios_;
-    raw.c_lflag &= ~(ECHO);
+    raw.c_lflag &= ~(ECHO | ICANON);
     tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
   }
 
   ~Terminal() { tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios_); }
+
+  // Remove copy/assignment
+  Terminal(const Terminal&) = delete;
+  Terminal& operator=(const Terminal&) = delete;
 
  private:
   termios orig_termios_;
