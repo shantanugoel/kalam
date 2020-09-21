@@ -6,20 +6,31 @@ extern "C" {
 #include <unistd.h>
 }
 
+#include "logger.h"
+
 namespace kalam {
 
 class Terminal {
  public:
   Terminal() {
-    tcgetattr(STDIN_FILENO, &orig_termios_);
+    if (tcgetattr(STDIN_FILENO, &orig_termios_) == -1) Logger::Die("tcgetattr");
     // TODO: Bind atexit() with disabling raw mode.
 
     termios raw = orig_termios_;
-    raw.c_lflag &= ~(ECHO | ICANON);
+    raw.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
+    raw.c_oflag &= ~(OPOST);
+    raw.c_cflag |= (CS8);
+    raw.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
+    raw.c_cc[VMIN] = 0;
+    raw.c_cc[VTIME] = 1;
+
     tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
   }
 
-  ~Terminal() { tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios_); }
+  ~Terminal() {
+    if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios_) == -1)
+      Logger::Die("tcsetattr");
+  }
 
   // Remove copy/assignment
   Terminal(const Terminal&) = delete;
