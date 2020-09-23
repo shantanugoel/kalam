@@ -1,8 +1,6 @@
 #ifndef KALAM_SRC_EDITOR_H_
 #define KALAM_SRC_EDITOR_H_
 
-#include <cstdlib>
-
 #include "terminal.h"
 
 namespace kalam {
