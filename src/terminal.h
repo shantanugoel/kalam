@@ -36,6 +36,15 @@ class Terminal {
   Terminal(const Terminal&) = delete;
   Terminal& operator=(const Terminal&) = delete;
 
+  char ReadKey() {
+    char c;
+    int nread = 0;
+    while ((nread = read(STDIN_FILENO, &c, 1)) != 1) {
+      if (nread == -1 && errno != EAGAIN) Logger::Die("read");
+    }
+    return c;
+  }
+
  private:
   termios orig_termios_;
 };

@@ -6,6 +6,7 @@ cc_binary(
         "main.cc",
     ],
     deps = [
+        ":editor",
         ":logger",
         ":terminal",
     ],
@@ -20,4 +21,11 @@ cc_library(
 cc_library(
     name = "logger",
     hdrs = ["logger.h"],
+)
+
+cc_library(
+    name = "editor",
+    srcs = ["editor.cc"],
+    hdrs = ["editor.h"],
+    deps = [":terminal"],
 )
