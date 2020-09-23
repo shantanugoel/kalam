@@ -8,13 +8,12 @@
 namespace kalam {
 
 int RunMain() {
-  Terminal term;
+  static Terminal term;
   Editor editor(term);
 
-  bool result = true;
-  do {
-    result = editor.ProcessKeyPress();
-  } while (result);
+  while (1) {
+    editor.ProcessKeyPress();
+  }
 
   return 0;
 }

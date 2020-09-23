@@ -11,7 +11,7 @@ class Editor {
  public:
   Editor(Terminal& term) : term_(term) {}
 
-  bool ProcessKeyPress();
+  void ProcessKeyPress();
 
  private:
   Terminal& term_;

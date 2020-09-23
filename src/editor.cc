@@ -4,14 +4,12 @@
 
 namespace kalam {
 
-bool Editor::ProcessKeyPress() {
+void Editor::ProcessKeyPress() {
   char c = term_.ReadKey();
   switch (c) {
     case CTRL_KEY('q'):
-      return false;
+      exit(0);
   }
-
-  return true;
 }
 
 }  // namespace kalam
