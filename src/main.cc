@@ -12,6 +12,7 @@ int RunMain() {
   Editor editor(term);
 
   while (1) {
+    term.RefreshScreen();
     editor.ProcessKeyPress();
   }
 

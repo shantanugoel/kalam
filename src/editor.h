@@ -9,7 +9,7 @@ class Editor {
  public:
   Editor(Terminal& term) : term_(term) {}
 
-  void ProcessKeyPress();
+  void ProcessKeyPress() const;
 
  private:
   Terminal& term_;

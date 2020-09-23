@@ -36,13 +36,18 @@ class Terminal {
   Terminal(const Terminal&) = delete;
   Terminal& operator=(const Terminal&) = delete;
 
-  char ReadKey() {
+  char ReadKey() const {
     char c;
     int nread = 0;
     while ((nread = read(STDIN_FILENO, &c, 1)) != 1) {
       if (nread == -1 && errno != EAGAIN) Logger::Die("read");
     }
     return c;
+  }
+
+  void RefreshScreen() const {
+    write(STDOUT_FILENO, "\x1b[2J", 4);
+    write(STDOUT_FILENO, "\x1b[H", 3);
   }
 
  private:

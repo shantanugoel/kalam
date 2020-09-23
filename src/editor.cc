@@ -6,10 +6,11 @@
 
 namespace kalam {
 
-void Editor::ProcessKeyPress() {
+void Editor::ProcessKeyPress() const {
   char c = term_.ReadKey();
   switch (c) {
     case CTRL_KEY('q'):
+      term_.RefreshScreen();
       std::exit(0);
   }
 }
