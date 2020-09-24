@@ -45,9 +45,22 @@ class Terminal {
     return c;
   }
 
-  void RefreshScreen() const {
+  void ClearScreen() const {
     write(STDOUT_FILENO, "\x1b[2J", 4);
     write(STDOUT_FILENO, "\x1b[H", 3);
+  }
+
+  void RefreshScreen() const {
+    ClearScreen();
+    DrawRows();
+    write(STDOUT_FILENO, "\x1b[H", 3);
+  }
+
+  void DrawRows() const {
+    // TODO: Remove hardcoded 24 and determine window size.
+    for (int row = 0; row < 24; ++row) {
+      write(STDOUT_FILENO, "~\r\n", 3);
+    }
   }
 
  private:
