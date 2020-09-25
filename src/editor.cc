@@ -10,14 +10,43 @@ namespace kalam {
 const std::string kKalamVersion = "0.0.1";
 const std::string kWelcomeMessage = "Kalam Editor -- version " + kKalamVersion;
 
+void Editor::MoveCursor(char key) const {
+  switch (key) {
+    case 'a':
+      editor_state_.cx_--;
+      break;
+
+    case 'd':
+      editor_state_.cx_++;
+      break;
+
+    case 'w':
+      editor_state_.cy_--;
+      break;
+
+    case 's':
+      editor_state_.cy_++;
+      break;
+  }
+}
+
 void Editor::ProcessKeyPress() const {
   char c = term_.ReadKey();
   switch (c) {
-    case CTRL_KEY('q'):
+    case CTRL_KEY('q'): {
       std::string buffer;
       term_.PrepareBufferClearScreen(buffer);
       term_.Write(buffer);
       std::exit(0);
+      break;
+    }
+
+    case 'w':
+    case 's':
+    case 'a':
+    case 'd':
+      MoveCursor(c);
+      break;
   }
 }
 
@@ -46,8 +75,12 @@ void Editor::PrepareBufferDrawRows(std::string& buffer) const {
 void Editor::RefreshScreen() const {
   std::string buffer = "";
   term_.PrepareBufferHideCursor(buffer);
+
   PrepareBufferDrawRows(buffer);
-  term_.PrepareBufferMoveCursorToTopLeft(buffer);
+
+  term_.PrepareBufferMoveCursorToYX(buffer, editor_state_.cy_ + 1,
+                                    editor_state_.cx_ + 1);
+
   term_.PrepareBufferShowCursor(buffer);
   term_.Write(buffer);
 }

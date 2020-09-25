@@ -16,8 +16,14 @@ class EditorState {
   EditorState& operator=(const EditorState&) = delete;
 
  private:
+  // Cursor State;
+  int cx_ = 0;
+  int cy_ = 0;
+
+  // Screen State
   int screen_rows_;
   int screen_cols_;
+
   friend class Editor;
 };
 

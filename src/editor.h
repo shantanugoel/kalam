@@ -19,6 +19,7 @@ class Editor {
   void ProcessKeyPress() const;
   void RefreshScreen() const;
   void PrepareBufferDrawRows(std::string& buffer) const;
+  void MoveCursor(char key) const;
 
  private:
   Terminal& term_;
