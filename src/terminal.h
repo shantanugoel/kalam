@@ -65,6 +65,12 @@ class Terminal {
     buffer += "\x1b[?25h";
   }
 
+  void PrepareBufferClearScreen(std::string& buffer) const {
+    buffer += "\x1b[2J";
+  }
+
+  void PrepareBufferClearLine(std::string& buffer) const { buffer += "\x1b[K"; }
+
   int GetCursorPosition(int& rows, int& cols) const {
     char buf[32];
     unsigned int i = 0;
@@ -78,10 +84,6 @@ class Terminal {
     if (buf[0] != '\x1b' || buf[1] != '[') return -1;
     if (sscanf(&buf[2], "%d;%d", &rows, &cols) != 2) return -1;
     return 0;
-  }
-
-  void PrepareBufferClearScreen(std::string& buffer) const {
-    buffer += "\x1b[2J";
   }
 
   int GetWindowSize(int& rows, int& cols) const {
