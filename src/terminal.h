@@ -57,6 +57,14 @@ class Terminal {
     buffer += "\x1b[H";
   }
 
+  void PrepareBufferHideCursor(std::string& buffer) const {
+    buffer += "\x1b[?25l";
+  }
+
+  void PrepareBufferShowCursor(std::string& buffer) const {
+    buffer += "\x1b[?25h";
+  }
+
   int GetCursorPosition(int& rows, int& cols) const {
     char buf[32];
     unsigned int i = 0;

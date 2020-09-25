@@ -29,9 +29,11 @@ void Editor::PrepareBufferDrawRows(std::string& buffer) const {
 
 void Editor::RefreshScreen() const {
   std::string buffer = "";
+  term_.PrepareBufferHideCursor(buffer);
   term_.PrepareBufferClearScreen(buffer);
   PrepareBufferDrawRows(buffer);
   term_.PrepareBufferMoveCursorToTopLeft(buffer);
+  term_.PrepareBufferShowCursor(buffer);
   term_.Write(buffer);
 }
 
