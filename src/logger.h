@@ -5,6 +5,10 @@
 #include <cstdio>
 #include <cstdlib>
 
+#define STRINGIFY(X) #X
+#define TOSTRING(X) STRINGIFY(X)
+#define LOG_STRING(s) (__FILE__ ":" TOSTRING(__LINE__) ":" s)
+
 namespace kalam {
 class Logger {
  public:

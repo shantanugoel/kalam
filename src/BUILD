@@ -7,6 +7,7 @@ cc_binary(
     ],
     deps = [
         ":editor",
+        ":editor_state",
         ":logger",
         ":terminal",
     ],
@@ -27,5 +28,13 @@ cc_library(
     name = "editor",
     srcs = ["editor.cc"],
     hdrs = ["editor.h"],
-    deps = [":terminal"],
+    deps = [
+        ":editor_state",
+        ":terminal",
+    ],
+)
+
+cc_library(
+    name = "editor_state",
+    hdrs = ["editor_state.h"],
 )

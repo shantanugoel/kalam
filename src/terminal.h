@@ -2,9 +2,12 @@
 #define KALAM_SRC_TERMINAL_H_
 
 extern "C" {
+#include <sys/ioctl.h>
 #include <termios.h>
 #include <unistd.h>
 }
+
+#include <string_view>
 
 #include "logger.h"
 
@@ -40,26 +43,43 @@ class Terminal {
     char c;
     int nread = 0;
     while ((nread = read(STDIN_FILENO, &c, 1)) != 1) {
-      if (nread == -1 && errno != EAGAIN) Logger::Die("read");
+      if (nread == -1 && errno != EAGAIN) Logger::Die(LOG_STRING("read"));
     }
     return c;
   }
 
-  void ClearScreen() const {
-    write(STDOUT_FILENO, "\x1b[2J", 4);
-    write(STDOUT_FILENO, "\x1b[H", 3);
+  void Write(std::string_view string) const {
+    write(STDOUT_FILENO, string.data(), string.length());
   }
 
-  void RefreshScreen() const {
-    ClearScreen();
-    DrawRows();
-    write(STDOUT_FILENO, "\x1b[H", 3);
+  void MoveCursorToTopLeft() const { Write("\x1b[H"); }
+
+  int GetCursorPosition(int& rows, int& cols) const {
+    char buf[32];
+    unsigned int i = 0;
+    if (write(STDOUT_FILENO, "\x1b[6n", 4) != 4) return -1;
+    while (i < sizeof(buf) - 1) {
+      if (read(STDIN_FILENO, &buf[i], 1) != 1) break;
+      if (buf[i] == 'R') break;
+      i++;
+    }
+    buf[i] = '\0';
+    if (buf[0] != '\x1b' || buf[1] != '[') return -1;
+    if (sscanf(&buf[2], "%d;%d", &rows, &cols) != 2) return -1;
+    return 0;
   }
 
-  void DrawRows() const {
-    // TODO: Remove hardcoded 24 and determine window size.
-    for (int row = 0; row < 24; ++row) {
-      write(STDOUT_FILENO, "~\r\n", 3);
+  void ClearScreen() const { Write("\x1b[2J"); }
+
+  int GetWindowSize(int& rows, int& cols) const {
+    struct winsize ws;
+    if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws) == -1 || ws.ws_col == 0) {
+      if (write(STDOUT_FILENO, "\x1b[999C\x1b[999B", 12) != 12) return -1;
+      return GetCursorPosition(rows, cols);
+    } else {
+      cols = ws.ws_col;
+      rows = ws.ws_row;
+      return 0;
     }
   }
 

@@ -15,4 +15,19 @@ void Editor::ProcessKeyPress() const {
   }
 }
 
+void Editor::DrawRows() const {
+  // Draw tilde on every row. Don't do carriage return/line feed on last row to
+  // avoid scroll.
+  for (int row = 0; row < editor_state_.screen_rows_ - 1; ++row) {
+    term_.Write("~\r\n");
+  }
+  term_.Write("~");
+}
+
+void Editor::RefreshScreen() const {
+  term_.ClearScreen();
+  DrawRows();
+  term_.MoveCursorToTopLeft();
+}
+
 }  // namespace kalam

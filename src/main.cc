@@ -2,6 +2,7 @@
 #include <cstdio>
 
 #include "editor.h"
+#include "editor_state.h"
 #include "logger.h"
 #include "terminal.h"
 
@@ -9,10 +10,11 @@ namespace kalam {
 
 int RunMain() {
   static Terminal term;
-  Editor editor(term);
+  static EditorState editor_state;
+  Editor editor(term, editor_state);
 
   while (1) {
-    term.RefreshScreen();
+    editor.RefreshScreen();
     editor.ProcessKeyPress();
   }
 
