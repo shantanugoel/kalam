@@ -7,6 +7,7 @@ extern "C" {
 #include <unistd.h>
 }
 
+#include <string>
 #include <string_view>
 
 #include "logger.h"
@@ -52,7 +53,9 @@ class Terminal {
     write(STDOUT_FILENO, string.data(), string.length());
   }
 
-  void MoveCursorToTopLeft() const { Write("\x1b[H"); }
+  void PrepareBufferMoveCursorToTopLeft(std::string& buffer) const {
+    buffer += "\x1b[H";
+  }
 
   int GetCursorPosition(int& rows, int& cols) const {
     char buf[32];
@@ -69,7 +72,9 @@ class Terminal {
     return 0;
   }
 
-  void ClearScreen() const { Write("\x1b[2J"); }
+  void PrepareBufferClearScreen(std::string& buffer) const {
+    buffer += "\x1b[2J";
+  }
 
   int GetWindowSize(int& rows, int& cols) const {
     struct winsize ws;

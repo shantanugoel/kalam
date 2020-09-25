@@ -1,6 +1,7 @@
 #include "editor.h"
 
 #include <cstdlib>
+#include <string>
 
 #define CTRL_KEY(c) (c & 0x1F)
 
@@ -10,24 +11,28 @@ void Editor::ProcessKeyPress() const {
   char c = term_.ReadKey();
   switch (c) {
     case CTRL_KEY('q'):
-      term_.ClearScreen();
+      std::string buffer;
+      term_.PrepareBufferClearScreen(buffer);
+      term_.Write(buffer);
       std::exit(0);
   }
 }
 
-void Editor::DrawRows() const {
+void Editor::PrepareBufferDrawRows(std::string& buffer) const {
   // Draw tilde on every row. Don't do carriage return/line feed on last row to
   // avoid scroll.
   for (int row = 0; row < editor_state_.screen_rows_ - 1; ++row) {
-    term_.Write("~\r\n");
+    buffer += "~\r\n";
   }
-  term_.Write("~");
+  buffer += "~";
 }
 
 void Editor::RefreshScreen() const {
-  term_.ClearScreen();
-  DrawRows();
-  term_.MoveCursorToTopLeft();
+  std::string buffer = "";
+  term_.PrepareBufferClearScreen(buffer);
+  PrepareBufferDrawRows(buffer);
+  term_.PrepareBufferMoveCursorToTopLeft(buffer);
+  term_.Write(buffer);
 }
 
 }  // namespace kalam
