@@ -16,11 +16,11 @@ extern "C" {
 namespace kalam {
 
 // TODO: Move this to a better module. Should not be in terminal
-enum class Key : char {
-  kArrowLeft = 'a',
-  kArrowRight = 'd',
-  kArrowUp = 'w',
-  kArrowDown = 's',
+enum class Key : int {
+  kArrowLeft = 1000,
+  kArrowRight = 1001,
+  kArrowUp = 1002,
+  kArrowDown = 1003,
 };
 
 class Terminal {
@@ -49,7 +49,7 @@ class Terminal {
   Terminal(const Terminal&) = delete;
   Terminal& operator=(const Terminal&) = delete;
 
-  char ReadKey() const {
+  int ReadKey() const {
     char c;
     int nread = 0;
     while ((nread = read(STDIN_FILENO, &c, 1)) != 1) {

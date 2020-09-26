@@ -13,7 +13,7 @@ namespace kalam {
 const std::string kKalamVersion = "0.0.1";
 const std::string kWelcomeMessage = "Kalam Editor -- version " + kKalamVersion;
 
-void Editor::MoveCursor(char key) const {
+void Editor::MoveCursor(int key) const {
   switch (key) {
     case ToUnderlying(Key::kArrowLeft):
       if (editor_state_.cx_ != 0) editor_state_.cx_--;
@@ -35,7 +35,7 @@ void Editor::MoveCursor(char key) const {
 }
 
 void Editor::ProcessKeyPress() const {
-  char c = term_.ReadKey();
+  int c = term_.ReadKey();
   switch (c) {
     case CTRL_KEY('q'): {
       std::string buffer;
