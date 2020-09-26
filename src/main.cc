@@ -8,11 +8,11 @@
 
 namespace kalam {
 
-int RunMain() {
+int RunMain(const char *filename) {
   static Terminal term;
   static EditorState editor_state;
   Editor editor(term, editor_state);
-  editor.Open();
+  editor.Open(filename);
 
   while (1) {
     editor.RefreshScreen();
@@ -24,4 +24,8 @@ int RunMain() {
 
 }  // namespace kalam
 
-int main() { return kalam::RunMain(); }
+int main(int argc, char *argv[]) {
+  char *filename = nullptr;
+  if (argc >= 2) filename = argv[1];
+  return kalam::RunMain(filename);
+}

@@ -1,7 +1,9 @@
 #include "editor.h"
 
 #include <cstdlib>
+#include <fstream>
 #include <string>
+#include <string_view>
 
 #include "terminal.h"
 #include "utils.h"
@@ -116,6 +118,16 @@ void Editor::RefreshScreen() const {
   term_.Write(buffer);
 }
 
-void Editor::Open() const { editor_state_.rows_.emplace_back("Hello, world"); }
+void Editor::Open(const char* filename) const {
+  if (filename != nullptr) {
+    std::fstream file;
+    // TODO: set current working directory to open local files
+    file.open(filename);
+    if (!file.is_open()) Logger::Die(filename);
+
+    std::string line;
+    while (std::getline(file, line)) editor_state_.rows_.emplace_back(line);
+  }
+}
 
 }  // namespace kalam

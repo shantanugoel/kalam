@@ -1,6 +1,8 @@
 #ifndef KALAM_SRC_EDITOR_H_
 #define KALAM_SRC_EDITOR_H_
 
+#include <string_view>
+
 #include "editor_state.h"
 #include "terminal.h"
 
@@ -18,7 +20,7 @@ class Editor {
 
   void ProcessKeyPress() const;
   void RefreshScreen() const;
-  void Open() const;
+  void Open(const char* filename) const;
 
  private:
   Terminal& term_;
