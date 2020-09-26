@@ -12,6 +12,7 @@ int RunMain() {
   static Terminal term;
   static EditorState editor_state;
   Editor editor(term, editor_state);
+  editor.Open();
 
   while (1) {
     editor.RefreshScreen();

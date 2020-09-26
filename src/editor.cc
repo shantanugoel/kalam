@@ -76,17 +76,24 @@ void Editor::ProcessKeyPress() const {
 void Editor::PrepareBufferDrawRows(std::string& buffer) const {
   // Draw tilde on every row. Don't do carriage return/line feed on last row to
   // avoid scroll.
-  for (int row = 0; row < editor_state_.screen_rows_ - 1; ++row) {
-    if (row == editor_state_.screen_rows_ / 3) {
-      int padding = (editor_state_.screen_cols_ - kWelcomeMessage.length()) / 2;
-      if (padding) {
+  for (size_t row = 0; row < editor_state_.screen_rows_ - 1; ++row) {
+    if (row >= editor_state_.rows_.size()) {
+      if (row == editor_state_.screen_rows_ / 3) {
+        int padding =
+            (editor_state_.screen_cols_ - kWelcomeMessage.length()) / 2;
+        if (padding) {
+          buffer += "~";
+          padding--;
+        }
+        while (padding--) buffer += " ";
+        buffer += kWelcomeMessage;
+      } else {
         buffer += "~";
-        padding--;
       }
-      while (padding--) buffer += " ";
-      buffer += kWelcomeMessage;
     } else {
-      buffer += "~";
+      for (auto& str : editor_state_.rows_) {
+        buffer += str;
+      }
     }
     term_.PrepareBufferClearLine(buffer);
     buffer += "\r\n";
@@ -107,5 +114,7 @@ void Editor::RefreshScreen() const {
   term_.PrepareBufferShowCursor(buffer);
   term_.Write(buffer);
 }
+
+void Editor::Open() const { editor_state_.rows_.emplace_back("Hello, world"); }
 
 }  // namespace kalam

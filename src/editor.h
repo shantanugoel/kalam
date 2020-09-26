@@ -18,6 +18,7 @@ class Editor {
 
   void ProcessKeyPress() const;
   void RefreshScreen() const;
+  void Open() const;
 
  private:
   Terminal& term_;

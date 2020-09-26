@@ -1,6 +1,9 @@
 #ifndef KALAM_SRC_EDITOR_STATE_H_
 #define KALAM_SRC_EDITOR_STATE_H_
 
+#include <string>
+#include <vector>
+
 namespace kalam {
 
 // Forward declaration for making it a friend without adding a dependency to it.
@@ -17,12 +20,15 @@ class EditorState {
 
  private:
   // Cursor State;
-  int cx_ = 0;
-  int cy_ = 0;
+  size_t cx_ = 0;
+  size_t cy_ = 0;
 
   // Screen State
-  int screen_rows_;
-  int screen_cols_;
+  size_t screen_rows_;
+  size_t screen_cols_;
+
+  // Text data
+  std::vector<std::string> rows_ = {};
 
   friend class Editor;
 };
