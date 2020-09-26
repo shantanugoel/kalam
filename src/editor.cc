@@ -3,6 +3,9 @@
 #include <cstdlib>
 #include <string>
 
+#include "terminal.h"
+#include "utils.h"
+
 #define CTRL_KEY(c) (c & 0x1F)
 
 namespace kalam {
@@ -12,19 +15,19 @@ const std::string kWelcomeMessage = "Kalam Editor -- version " + kKalamVersion;
 
 void Editor::MoveCursor(char key) const {
   switch (key) {
-    case 'a':
+    case ToUnderlying(Key::kArrowLeft):
       editor_state_.cx_--;
       break;
 
-    case 'd':
+    case ToUnderlying(Key::kArrowRight):
       editor_state_.cx_++;
       break;
 
-    case 'w':
+    case ToUnderlying(Key::kArrowUp):
       editor_state_.cy_--;
       break;
 
-    case 's':
+    case ToUnderlying(Key::kArrowDown):
       editor_state_.cy_++;
       break;
   }
@@ -41,10 +44,10 @@ void Editor::ProcessKeyPress() const {
       break;
     }
 
-    case 'w':
-    case 's':
-    case 'a':
-    case 'd':
+    case ToUnderlying(Key::kArrowLeft):
+    case ToUnderlying(Key::kArrowRight):
+    case ToUnderlying(Key::kArrowUp):
+    case ToUnderlying(Key::kArrowDown):
       MoveCursor(c);
       break;
   }

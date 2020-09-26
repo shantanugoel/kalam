@@ -17,8 +17,8 @@ cc_library(
     name = "terminal",
     hdrs = ["terminal.h"],
     deps = [
-        "logger",
-        "utils",
+        ":logger",
+        ":utils",
     ],
 )
 
@@ -34,6 +34,7 @@ cc_library(
     deps = [
         ":editor_state",
         ":terminal",
+        ":utils",
     ],
 )
 
