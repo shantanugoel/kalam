@@ -119,15 +119,13 @@ void Editor::RefreshScreen() const {
 }
 
 void Editor::Open(const char* filename) const {
-  if (filename != nullptr) {
-    std::fstream file;
-    // TODO: set current working directory to open local files
-    file.open(filename);
-    if (!file.is_open()) Logger::Die(filename);
+  std::fstream file;
+  // TODO: set current working directory to open local files
+  file.open(filename);
+  if (!file.is_open()) Logger::Die(filename);
 
-    std::string line;
-    while (std::getline(file, line)) editor_state_.rows_.emplace_back(line);
-  }
+  std::string line;
+  while (std::getline(file, line)) editor_state_.rows_.emplace_back(line);
 }
 
 }  // namespace kalam

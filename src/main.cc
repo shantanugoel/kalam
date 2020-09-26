@@ -12,7 +12,7 @@ int RunMain(const char *filename) {
   static Terminal term;
   static EditorState editor_state;
   Editor editor(term, editor_state);
-  editor.Open(filename);
+  if (filename) editor.Open(filename);
 
   while (1) {
     editor.RefreshScreen();
