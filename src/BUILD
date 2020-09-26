@@ -15,6 +15,7 @@ cc_binary(
 
 cc_library(
     name = "terminal",
+    srcs = ["terminal.cc"],
     hdrs = ["terminal.h"],
     deps = [
         ":logger",

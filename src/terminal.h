@@ -18,9 +18,14 @@ namespace kalam {
 // TODO: Move this to a better module. Should not be in terminal
 enum class Key : int {
   kArrowLeft = 1000,
-  kArrowRight = 1001,
-  kArrowUp = 1002,
-  kArrowDown = 1003,
+  kArrowRight,
+  kArrowUp,
+  kArrowDown,
+  kDel,
+  kHome,
+  kEnd,
+  kPageUp,
+  kPageDown,
 };
 
 class Terminal {
@@ -49,40 +54,7 @@ class Terminal {
   Terminal(const Terminal&) = delete;
   Terminal& operator=(const Terminal&) = delete;
 
-  int ReadKey() const {
-    char c;
-    int nread = 0;
-    while ((nread = read(STDIN_FILENO, &c, 1)) != 1) {
-      if (nread == -1 && errno != EAGAIN) Logger::Die(LOG_STRING("read"));
-    }
-
-    // Handle escape sequences/special keys
-    // TODO: Think about better ways of doing this. Currently this adds 0.1-0.2
-    // seconds of delay
-    if (c == '\x1b') {
-      char seq[3];
-      if (read(STDIN_FILENO, &seq[0], 1) != 1) return '\x1b';
-      if (read(STDIN_FILENO, &seq[1], 1) != 1) return '\x1b';
-
-      // Handle arrow keys and treat them as our internal movement keys
-      // TODO: Think about whether to do this replacement in editor instead.
-      if (seq[0] == '[') {
-        switch (seq[1]) {
-          case 'A':
-            return ToUnderlying(Key::kArrowUp);
-          case 'B':
-            return ToUnderlying(Key::kArrowDown);
-          case 'C':
-            return ToUnderlying(Key::kArrowRight);
-          case 'D':
-            return ToUnderlying(Key::kArrowLeft);
-        }
-      }
-      return '\x1b';
-    } else {
-      return c;
-    }
-  }
+  int ReadKey() const;
 
   void Write(std::string_view string) const {
     write(STDOUT_FILENO, string.data(), string.length());

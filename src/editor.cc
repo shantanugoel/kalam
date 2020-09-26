@@ -42,8 +42,27 @@ void Editor::ProcessKeyPress() const {
       term_.PrepareBufferClearScreen(buffer);
       term_.Write(buffer);
       std::exit(0);
+    } break;
+
+    case ToUnderlying(Key::kHome):
+      editor_state_.cx_ = 0;
       break;
-    }
+
+    case ToUnderlying(Key::kEnd):
+      editor_state_.cx_ = editor_state_.screen_cols_ - 1;
+      break;
+
+    case ToUnderlying(Key::kPageUp):
+    case ToUnderlying(Key::kPageDown): {
+      int times = editor_state_.screen_rows_;
+      // TODO: Improve perf by calculating once directly and moving.
+      // But this may be better for scrolling.
+      while (times--) {
+        MoveCursor(c == ToUnderlying(Key::kPageUp)
+                       ? ToUnderlying(Key::kPageUp)
+                       : ToUnderlying(Key::kPageDown));
+      }
+    } break;
 
     case ToUnderlying(Key::kArrowLeft):
     case ToUnderlying(Key::kArrowRight):
