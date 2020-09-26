@@ -60,7 +60,12 @@ class Terminal {
     write(STDOUT_FILENO, string.data(), string.length());
   }
 
-  void PrepareBufferMoveCursorToYX(std::string& buffer, int y, int x) const {
+  void PrepareBufferResetCursor(std::string& buffer) const {
+    buffer += "\x1b[H";
+  }
+
+  void PrepareBufferMoveCursorToYX(std::string& buffer, size_t y,
+                                   size_t x) const {
     buffer += "\x1b[" + std::to_string(y) + ";" + std::to_string(x) + "H";
   }
 

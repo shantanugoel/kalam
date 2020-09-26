@@ -29,7 +29,8 @@ void Editor::MoveCursor(int key) const {
       break;
 
     case ToUnderlying(Key::kArrowDown):
-      if (editor_state_.cx_ != editor_state_.screen_rows_) editor_state_.cy_++;
+      if (editor_state_.cx_ != editor_state_.screen_rows_ - 1)
+        editor_state_.cy_++;
       break;
   }
 }
@@ -105,12 +106,12 @@ void Editor::PrepareBufferDrawRows(std::string& buffer) const {
 void Editor::RefreshScreen() const {
   std::string buffer = "";
   term_.PrepareBufferHideCursor(buffer);
+  term_.PrepareBufferResetCursor(buffer);
 
   PrepareBufferDrawRows(buffer);
 
   term_.PrepareBufferMoveCursorToYX(buffer, editor_state_.cy_ + 1,
                                     editor_state_.cx_ + 1);
-
   term_.PrepareBufferShowCursor(buffer);
   term_.Write(buffer);
 }
