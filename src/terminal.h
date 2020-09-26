@@ -46,7 +46,31 @@ class Terminal {
     while ((nread = read(STDIN_FILENO, &c, 1)) != 1) {
       if (nread == -1 && errno != EAGAIN) Logger::Die(LOG_STRING("read"));
     }
-    return c;
+
+    // Handle escape sequences/special keys
+    if (c == '\x1b') {
+      char seq[3];
+      if (read(STDIN_FILENO, &seq[0], 1) != 1) return '\x1b';
+      if (read(STDIN_FILENO, &seq[1], 1) != 1) return '\x1b';
+
+      // Handle arrow keys and treat them as our internal movement keys
+      // TODO: Think about whether to do this replacement in editor instead.
+      if (seq[0] == '[') {
+        switch (seq[1]) {
+          case 'A':
+            return 'w';
+          case 'B':
+            return 's';
+          case 'C':
+            return 'd';
+          case 'D':
+            return 'a';
+        }
+      }
+      return '\x1b';
+    } else {
+      return c;
+    }
   }
 
   void Write(std::string_view string) const {
