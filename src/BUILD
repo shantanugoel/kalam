@@ -16,7 +16,10 @@ cc_binary(
 cc_library(
     name = "terminal",
     hdrs = ["terminal.h"],
-    deps = ["logger"],
+    deps = [
+        "logger",
+        "utils",
+    ],
 )
 
 cc_library(
@@ -37,4 +40,9 @@ cc_library(
 cc_library(
     name = "editor_state",
     hdrs = ["editor_state.h"],
+)
+
+cc_library(
+    name = "utils",
+    hdrs = ["utils.h"],
 )

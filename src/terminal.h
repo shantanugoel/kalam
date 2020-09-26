@@ -11,8 +11,17 @@ extern "C" {
 #include <string_view>
 
 #include "logger.h"
+#include "utils.h"
 
 namespace kalam {
+
+// TODO: Move this to a better module. Should not be in terminal
+enum class Key : char {
+  kArrowLeft = 'a',
+  kArrowRight = 'd',
+  kArrowUp = 'w',
+  kArrowDown = 's',
+};
 
 class Terminal {
  public:
@@ -48,6 +57,8 @@ class Terminal {
     }
 
     // Handle escape sequences/special keys
+    // TODO: Think about better ways of doing this. Currently this adds 0.1-0.2
+    // seconds of delay
     if (c == '\x1b') {
       char seq[3];
       if (read(STDIN_FILENO, &seq[0], 1) != 1) return '\x1b';
@@ -58,13 +69,13 @@ class Terminal {
       if (seq[0] == '[') {
         switch (seq[1]) {
           case 'A':
-            return 'w';
+            return ToUnderlying(Key::kArrowUp);
           case 'B':
-            return 's';
+            return ToUnderlying(Key::kArrowDown);
           case 'C':
-            return 'd';
+            return ToUnderlying(Key::kArrowRight);
           case 'D':
-            return 'a';
+            return ToUnderlying(Key::kArrowLeft);
         }
       }
       return '\x1b';
