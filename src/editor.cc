@@ -16,19 +16,20 @@ const std::string kWelcomeMessage = "Kalam Editor -- version " + kKalamVersion;
 void Editor::MoveCursor(char key) const {
   switch (key) {
     case ToUnderlying(Key::kArrowLeft):
-      editor_state_.cx_--;
+      if (editor_state_.cx_ != 0) editor_state_.cx_--;
       break;
 
     case ToUnderlying(Key::kArrowRight):
-      editor_state_.cx_++;
+      if (editor_state_.cx_ != editor_state_.screen_cols_ - 1)
+        editor_state_.cx_++;
       break;
 
     case ToUnderlying(Key::kArrowUp):
-      editor_state_.cy_--;
+      if (editor_state_.cy_ != 0) editor_state_.cy_--;
       break;
 
     case ToUnderlying(Key::kArrowDown):
-      editor_state_.cy_++;
+      if (editor_state_.cx_ != editor_state_.screen_rows_) editor_state_.cy_++;
       break;
   }
 }
