@@ -93,13 +93,15 @@ void Editor::PrepareBufferDrawRows(std::string& buffer) const {
       } else {
         buffer += "~";
       }
+      term_.PrepareBufferClearLine(buffer);
+      buffer += "\r\n";
     } else {
       for (auto& str : editor_state_.rows_) {
         buffer += str;
+        term_.PrepareBufferClearLine(buffer);
+        buffer += "\r\n";
       }
     }
-    term_.PrepareBufferClearLine(buffer);
-    buffer += "\r\n";
   }
   buffer += "~";
   term_.PrepareBufferClearLine(buffer);
@@ -108,6 +110,7 @@ void Editor::PrepareBufferDrawRows(std::string& buffer) const {
 void Editor::RefreshScreen() const {
   std::string buffer = "";
   term_.PrepareBufferHideCursor(buffer);
+  term_.PrepareBufferClearScreen(buffer);
   term_.PrepareBufferResetCursor(buffer);
 
   PrepareBufferDrawRows(buffer);
@@ -125,7 +128,9 @@ void Editor::Open(const char* filename) const {
   if (!file.is_open()) Logger::Die(filename);
 
   std::string line;
-  while (std::getline(file, line)) editor_state_.rows_.emplace_back(line);
+  while (std::getline(file, line)) {
+    editor_state_.rows_.emplace_back(line);
+  }
 }
 
 }  // namespace kalam
