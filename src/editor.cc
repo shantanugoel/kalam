@@ -128,8 +128,9 @@ void Editor::RefreshScreen() const {
 
   PrepareBufferDrawRows(buffer);
 
-  term_.PrepareBufferMoveCursorToYX(buffer, editor_state_.cy_ + 1,
-                                    editor_state_.cx_ + 1);
+  term_.PrepareBufferMoveCursorToYX(
+      buffer, (editor_state_.cy_ - editor_state_.row_offset_) + 1,
+      editor_state_.cx_ + 1);
   term_.PrepareBufferShowCursor(buffer);
   term_.Write(buffer);
 }
