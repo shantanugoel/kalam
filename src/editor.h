@@ -27,6 +27,7 @@ class Editor {
   EditorState& editor_state_;
 
   void PrepareBufferDrawRows(std::string& buffer) const;
+  void Scroll() const;
   void MoveCursor(int key) const;
 };
 

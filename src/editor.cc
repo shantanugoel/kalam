@@ -80,7 +80,8 @@ void Editor::PrepareBufferDrawRows(std::string& buffer) const {
   // Draw tilde on every row. Don't do carriage return/line feed on last row to
   // avoid scroll.
   for (size_t row = 0; row < editor_state_.screen_rows_ - 1; ++row) {
-    if (row >= editor_state_.rows_.size()) {
+    size_t file_row = row + editor_state_.row_offset_;
+    if (file_row >= editor_state_.rows_.size()) {
       // Print welcome message only if there's not content being displayed.
       if (editor_state_.rows_.size() == 0 &&
           row == editor_state_.screen_rows_ / 3) {
@@ -95,22 +96,32 @@ void Editor::PrepareBufferDrawRows(std::string& buffer) const {
       } else {
         buffer += "~";
       }
-      term_.PrepareBufferClearLine(buffer);
-      buffer += "\r\n";
     } else {
-      for (auto& str : editor_state_.rows_) {
-        buffer += str;
-        term_.PrepareBufferClearLine(buffer);
-        buffer += "\r\n";
-      }
+      buffer += editor_state_.rows_[file_row];
     }
+    term_.PrepareBufferClearLine(buffer);
+    buffer += "\r\n";
   }
   buffer += "~";
   term_.PrepareBufferClearLine(buffer);
 }
 
+void Editor::Scroll() const {
+  if (editor_state_.cy_ < editor_state_.row_offset_) {
+    editor_state_.row_offset_ = editor_state_.cy_;
+  }
+  if (editor_state_.cy_ >=
+      editor_state_.row_offset_ + editor_state_.screen_rows_) {
+    editor_state_.row_offset_ =
+        editor_state_.cy_ - editor_state_.screen_rows_ + 1;
+  }
+}
+
 void Editor::RefreshScreen() const {
   std::string buffer = "";
+
+  Scroll();
+
   term_.PrepareBufferHideCursor(buffer);
   term_.PrepareBufferClearScreen(buffer);
   term_.PrepareBufferResetCursor(buffer);

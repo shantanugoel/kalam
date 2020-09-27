@@ -27,6 +27,9 @@ class EditorState {
   size_t screen_rows_;
   size_t screen_cols_;
 
+  // Offset/Row at the top of the screen.
+  size_t row_offset_ = 0;
+
   // Text data
   std::vector<std::string> rows_ = {};
 
