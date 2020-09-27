@@ -81,7 +81,9 @@ void Editor::PrepareBufferDrawRows(std::string& buffer) const {
   // avoid scroll.
   for (size_t row = 0; row < editor_state_.screen_rows_ - 1; ++row) {
     if (row >= editor_state_.rows_.size()) {
-      if (row == editor_state_.screen_rows_ / 3) {
+      // Print welcome message only if there's not content being displayed.
+      if (editor_state_.rows_.size() == 0 &&
+          row == editor_state_.screen_rows_ / 3) {
         int padding =
             (editor_state_.screen_cols_ - kWelcomeMessage.length()) / 2;
         if (padding) {
