@@ -31,8 +31,8 @@ void Editor::MoveCursor(int key) const {
       break;
 
     case ToUnderlying(Key::kArrowDown):
-      if (editor_state_.cx_ != editor_state_.screen_rows_ - 1)
-        editor_state_.cy_++;
+      // Don't scroll past end of file.
+      if (editor_state_.cy_ < editor_state_.rows_.size()) editor_state_.cy_++;
       break;
   }
 }
