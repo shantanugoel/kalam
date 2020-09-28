@@ -22,8 +22,7 @@ void Editor::MoveCursor(int key) const {
       break;
 
     case ToUnderlying(Key::kArrowRight):
-      if (editor_state_.cx_ != editor_state_.screen_cols_ - 1)
-        editor_state_.cx_++;
+      editor_state_.cx_++;
       break;
 
     case ToUnderlying(Key::kArrowUp):
@@ -97,7 +96,14 @@ void Editor::PrepareBufferDrawRows(std::string& buffer) const {
         buffer += "~";
       }
     } else {
-      buffer += editor_state_.rows_[file_row];
+      size_t len =
+          editor_state_.rows_[file_row].size() - editor_state_.col_offset_;
+      if (len < 0) len = 0;
+      if (len > editor_state_.screen_cols_) len = editor_state_.screen_cols_;
+      std::string_view temp = std::string_view(
+          editor_state_.rows_[file_row].data() + editor_state_.col_offset_,
+          len);
+      buffer += temp;
     }
     term_.PrepareBufferClearLine(buffer);
     buffer += "\r\n";
@@ -115,6 +121,14 @@ void Editor::Scroll() const {
     editor_state_.row_offset_ =
         editor_state_.cy_ - editor_state_.screen_rows_ + 1;
   }
+  if (editor_state_.cx_ < editor_state_.col_offset_) {
+    editor_state_.col_offset_ = editor_state_.cx_;
+  }
+  if (editor_state_.cx_ >=
+      editor_state_.col_offset_ + editor_state_.screen_cols_) {
+    editor_state_.col_offset_ =
+        editor_state_.cx_ - editor_state_.screen_cols_ + 1;
+  }
 }
 
 void Editor::RefreshScreen() const {
@@ -130,7 +144,7 @@ void Editor::RefreshScreen() const {
 
   term_.PrepareBufferMoveCursorToYX(
       buffer, (editor_state_.cy_ - editor_state_.row_offset_) + 1,
-      editor_state_.cx_ + 1);
+      (editor_state_.cx_ - editor_state_.col_offset_) + 1);
   term_.PrepareBufferShowCursor(buffer);
   term_.Write(buffer);
 }
