@@ -22,7 +22,9 @@ void Editor::MoveCursor(int key) const {
       break;
 
     case ToUnderlying(Key::kArrowRight):
-      editor_state_.cx_++;
+      if (editor_state_.cx_ < editor_state_.rows_[editor_state_.cy_].size()) {
+        editor_state_.cx_++;
+      }
       break;
 
     case ToUnderlying(Key::kArrowUp):
