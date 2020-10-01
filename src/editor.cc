@@ -22,7 +22,11 @@ void Editor::MoveCursor(int key) const {
       break;
 
     case ToUnderlying(Key::kArrowRight):
-      if (editor_state_.cx_ < editor_state_.rows_[editor_state_.cy_].size()) {
+      // If the cursor is not at the bottom of file (i.e. past the last line),
+      // and not at the end of current line, i.e. past the characters in the
+      // line, then we can allow cursor to move right.
+      if ((editor_state_.cy_ < editor_state_.rows_.size()) &&
+          (editor_state_.cx_ < editor_state_.rows_[editor_state_.cy_].size())) {
         editor_state_.cx_++;
       }
       break;
