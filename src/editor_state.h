@@ -33,7 +33,13 @@ class EditorState {
   size_t col_offset_ = 0;
 
   // Text data
-  std::vector<std::string> rows_ = {};
+  struct Row {
+    std::string row;
+    std::string render;
+    Row(std::string& row) : row(row), render("") {}
+  };
+
+  std::vector<Row> rows_ = {};
 
   friend class Editor;
 };
