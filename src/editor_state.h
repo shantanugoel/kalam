@@ -34,9 +34,9 @@ class EditorState {
 
   // Text data
   struct Row {
-    std::string row;
+    std::string raw;
     std::string render;
-    Row(std::string& row) : row(row), render("") {}
+    Row(std::string& raw) : raw(raw), render("") {}
   };
 
   std::vector<Row> rows_ = {};

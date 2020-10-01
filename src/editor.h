@@ -29,7 +29,9 @@ class Editor {
   void PrepareBufferDrawRows(std::string& buffer) const;
   void Scroll() const;
   void MoveCursor(int key) const;
+  void UpdateRow(EditorState::Row& row) const;
 };
 
 }  // namespace kalam
+
 #endif  // KALAM_SRC_EDITOR_H_

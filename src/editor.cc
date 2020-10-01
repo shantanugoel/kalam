@@ -23,7 +23,7 @@ void Editor::MoveCursor(int key) const {
       } else if (editor_state_.cy_ > 0) {
         // Move to the end of previous line on pressing left on start of a line.
         editor_state_.cy_--;
-        editor_state_.cx_ = editor_state_.rows_[editor_state_.cy_].row.size();
+        editor_state_.cx_ = editor_state_.rows_[editor_state_.cy_].raw.size();
       }
       break;
 
@@ -33,7 +33,7 @@ void Editor::MoveCursor(int key) const {
       // line, then we can allow cursor to move right.
       if ((editor_state_.cy_ < editor_state_.rows_.size())) {
         const auto& current_row_size =
-            editor_state_.rows_[editor_state_.cy_].row.size();
+            editor_state_.rows_[editor_state_.cy_].raw.size();
         if (editor_state_.cx_ < current_row_size) {
           editor_state_.cx_++;
         } else if (editor_state_.cx_ == current_row_size) {
@@ -59,10 +59,10 @@ void Editor::MoveCursor(int key) const {
   if (editor_state_.cy_ >= editor_state_.rows_.size()) {
     editor_state_.cx_ = 0;
   } else if (editor_state_.cx_ >
-             editor_state_.rows_[editor_state_.cy_].row.size()) {
+             editor_state_.rows_[editor_state_.cy_].raw.size()) {
     // Otherwise snap cursor to end of line if it is past the length of the
     // current line.
-    editor_state_.cx_ = editor_state_.rows_[editor_state_.cy_].row.size();
+    editor_state_.cx_ = editor_state_.rows_[editor_state_.cy_].raw.size();
   }
 }
 
@@ -126,13 +126,14 @@ void Editor::PrepareBufferDrawRows(std::string& buffer) const {
         buffer += "~";
       }
     } else {
-      size_t len =
-          editor_state_.rows_[file_row].row.size() - editor_state_.col_offset_;
+      size_t len = editor_state_.rows_[file_row].render.size() -
+                   editor_state_.col_offset_;
       if (len < 0) len = 0;
       if (len > editor_state_.screen_cols_) len = editor_state_.screen_cols_;
-      std::string_view temp = std::string_view(
-          editor_state_.rows_[file_row].row.data() + editor_state_.col_offset_,
-          len);
+      std::string_view temp =
+          std::string_view(editor_state_.rows_[file_row].render.data() +
+                               editor_state_.col_offset_,
+                           len);
       buffer += temp;
     }
     term_.PrepareBufferClearLine(buffer);
@@ -179,6 +180,11 @@ void Editor::RefreshScreen() const {
   term_.Write(buffer);
 }
 
+void Editor::UpdateRow(EditorState::Row& row) const {
+  row.render.clear();
+  row.render = row.raw;
+}
+
 void Editor::Open(const char* filename) const {
   std::fstream file;
   // TODO: set current working directory to open local files
@@ -188,6 +194,7 @@ void Editor::Open(const char* filename) const {
   std::string line;
   while (std::getline(file, line)) {
     editor_state_.rows_.emplace_back(EditorState::Row(line));
+    UpdateRow(editor_state_.rows_.back());
   }
 }
 
