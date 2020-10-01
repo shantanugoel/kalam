@@ -18,7 +18,13 @@ const std::string kWelcomeMessage = "Kalam Editor -- version " + kKalamVersion;
 void Editor::MoveCursor(int key) const {
   switch (key) {
     case ToUnderlying(Key::kArrowLeft):
-      if (editor_state_.cx_ != 0) editor_state_.cx_--;
+      if (editor_state_.cx_ != 0) {
+        editor_state_.cx_--;
+      } else if (editor_state_.cy_ > 0) {
+        // Move to the end of previous line on pressing left on start of a line.
+        editor_state_.cy_--;
+        editor_state_.cx_ = editor_state_.rows_[editor_state_.cy_].size();
+      }
       break;
 
     case ToUnderlying(Key::kArrowRight):
