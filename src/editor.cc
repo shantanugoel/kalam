@@ -40,6 +40,17 @@ void Editor::MoveCursor(int key) const {
       if (editor_state_.cy_ < editor_state_.rows_.size()) editor_state_.cy_++;
       break;
   }
+
+  // Snap cursor to 0 if it's at the bottom of the file, i.e. past the last
+  // line.
+  if (editor_state_.cy_ >= editor_state_.rows_.size()) {
+    editor_state_.cx_ = 0;
+  } else if (editor_state_.cx_ >
+             editor_state_.rows_[editor_state_.cy_].size()) {
+    // Otherwise snap cursor to end of line if it is past the length of the
+    // current line.
+    editor_state_.cx_ = editor_state_.rows_[editor_state_.cy_].size();
+  }
 }
 
 void Editor::ProcessKeyPress() const {
