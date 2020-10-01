@@ -31,9 +31,16 @@ void Editor::MoveCursor(int key) const {
       // If the cursor is not at the bottom of file (i.e. past the last line),
       // and not at the end of current line, i.e. past the characters in the
       // line, then we can allow cursor to move right.
-      if ((editor_state_.cy_ < editor_state_.rows_.size()) &&
-          (editor_state_.cx_ < editor_state_.rows_[editor_state_.cy_].size())) {
-        editor_state_.cx_++;
+      if ((editor_state_.cy_ < editor_state_.rows_.size())) {
+        const auto& current_row_size =
+            editor_state_.rows_[editor_state_.cy_].size();
+        if (editor_state_.cx_ < current_row_size) {
+          editor_state_.cx_++;
+        } else if (editor_state_.cx_ == current_row_size) {
+          // Move to next line if at the end of current line.
+          editor_state_.cy_++;
+          editor_state_.cx_ = 0;
+        }
       }
       break;
 
@@ -99,8 +106,8 @@ void Editor::ProcessKeyPress() const {
 }
 
 void Editor::PrepareBufferDrawRows(std::string& buffer) const {
-  // Draw tilde on every row. Don't do carriage return/line feed on last row to
-  // avoid scroll.
+  // Draw tilde on every row. Don't do carriage return/line feed on last row
+  // to avoid scroll.
   for (size_t row = 0; row < editor_state_.screen_rows_ - 1; ++row) {
     size_t file_row = row + editor_state_.row_offset_;
     if (file_row >= editor_state_.rows_.size()) {
